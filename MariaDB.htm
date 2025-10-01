@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>EF6 CodeFirst access MariaDB</title>
+</head>
+
+<body>
+<h3>ASP.NET, EF6 CodeFirst access MariaDB</h3>
+<p>I used vs2019 for the first time to develop asp.net Web program, in which I 
+  used EF6+CodeFirst to access MySQL database. I encountered some troubles during 
+  this period, so I would like to describe the steps of my work.</p>
+<p>1. Establish a .net web application project with vs2019.</p>
+<p>2. Use Nuget to install the following packages in the project:</p>
+<blockquote> 
+  <p>EntityFramework 6.5.1<br>
+    EntityFramework.CodeFirst 1.0.7</p>
+  <p><img src="My%20Pictures/nuget1.png" width="682" height="250"></p>
+</blockquote>
+<p>3. The test, establishment and operation with Microsoft SQL database are all 
+  good. The following is the connection string for the test:</p>
+<blockquote> 
+  <p> &lt;connectionStrings&gt;<br>
+    &lt;add name=&quot;MyDB&quot; connectionString=&quot;Data Source=(LocalDB)\MSSQLLocalDB;Initial 
+    Catalog=MyDB;AttachDbFilename=|DataDirectory|\MyDB.mdf;Integrated Security=True&quot; 
+    providerName=&quot;System.Data.SqlClient&quot; /&gt;<br>
+    &lt;/connectionStrings&gt;</p>
+</blockquote>
+<p>4. Download and install mysql-5.7.31</p>
+<p>5. Use Nuget to install the following packages supporting MySQL database in 
+  the project:</p>
+<blockquote> 
+  <p>MySql.Data 6.8.8<br>
+    MySql.Data.Entity 6.10.9</p>
+  <p><img src="My%20Pictures/nuget2.png" width="679" height="248"></p>
+</blockquote>
+<p>6. Test access to MySQL database. The .NET code remains unchanged, and the 
+  establishment and operation work well. The connection string for the test is 
+  as follows:</p>
+<blockquote> 
+  <p> &lt;connectionStrings&gt;<br>
+    &lt;add name=&quot;MyDB&quot; connectionString=&quot;server=localhost;port=3306;database=MyDB;user=root;password=******;&quot; 
+    providerName=&quot;MySql.Data.MySqlClient&quot; /&gt;<br>
+    &lt;/connectionStrings&gt;</p>
+</blockquote>
+<p>So far, accessing the local database (MS SQL, MySQL) is all right. So the project 
+  was released to the virtual host for testing, and the connection to MySQL failed. 
+  Because the virtual host does not have a MySQL server installed locally, it 
+  uses a remote MySQL server.</p>
+<p>7. Change the connection string as follows:</p>
+<blockquote> 
+  <p> &lt;connectionStrings&gt;<br>
+    &lt;add name=&quot;MyDB&quot; connectionString=&quot;server=mysql.remotehost.com;port=3306;database=MyDB;user=myid;password=mypassword;&quot; 
+    providerName=&quot;MySql.Data.MySqlClient&quot; /&gt;<br>
+    &lt;/connectionStrings&gt;</p>
+</blockquote>
+<p>The test results still failed. Query the remote MySQL server version as: 11.4.7-MariaDB-deb12.</p>
+<p>8. Download and install MariaDB-10.1.48 locally (the local computer is WIN32, 
+  which is the highest version found under WIN32), and the local testing work 
+  is very good. </p>
+<p>The test of connecting to the remote MySQL server on the local computer still 
+  failed. According to the error prompt, it seems that there are some problems 
+  in communication compatibility between. NET code and remote MySQL server.</p>
+<p>9. Uninstall the previously installed MySQL database package:</p>
+<blockquote> 
+  <p>MySql.Data 6.8.8<br>
+    MySql.Data.Entity 6.10.9</p>
+</blockquote>
+<p>Improve the .NET target framework of the project, and install the following 
+  packages in the project with Nuget:</p>
+<blockquote> 
+  <p>MySql.Data.EntityFramework 9.4.0</p>
+</blockquote>
+<p>Nuget automatically installs the packages it depends on, including MySql.Data 
+  9.4.0.</p>
+<blockquote> 
+  <p><img src="My%20Pictures/nuget3.png" width="681" height="266"></p>
+  <p>Continue to test the connection to the remote MySQL server on the local computer, 
+    and the connection is successful.</p>
+  <p>Publishing the project to the virtual host for testing also succeeded.</p>
+  <p>&nbsp;</p>
+</blockquote>
+</body>
+</html>
