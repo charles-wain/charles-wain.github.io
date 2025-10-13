@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2025-10-11T13:21:37+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Virtual Code, Real Life</title><subtitle>There are bugs in the code and worries in life, but every running code is elegant and every living life is wonderful.</subtitle><entry><title type="html">ASP.NET, EF6 CodeFirst access MariaDB</title><link href="http://localhost:4000/jekyll/update/2025/10/10/Access-MariaDB.html" rel="alternate" type="text/html" title="ASP.NET, EF6 CodeFirst access MariaDB" /><published>2025-10-10T00:00:00+08:00</published><updated>2025-10-10T00:00:00+08:00</updated><id>http://localhost:4000/jekyll/update/2025/10/10/Access-MariaDB</id><content type="html" xml:base="http://localhost:4000/jekyll/update/2025/10/10/Access-MariaDB.html"><![CDATA[<p>I used vs2019 for the first time to develop asp.net Web program, in which I used EF6+CodeFirst to access MySQL database. I encountered some troubles during this period, so I would like to describe the steps of my work.</p>
+
+<ul>
+  <li>
+    <p>Establish a .net web application project with vs2019.</p>
+  </li>
+  <li>
+    <p>Use Nuget to install the following packages in the project:</p>
+
+    <p><b>EntityFramework 6.5.1<br />
+  EntityFramework.CodeFirst 1.0.7</b></p>
+
+    <p><img src="/img/nuget1.png" alt="Fig. 1" /></p>
+  </li>
+  <li>
+    <p>The test, establishment and operation with Microsoft SQL database are all good. The following is the connection string for the test:</p>
+  </li>
+</ul>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;connectionStrings&gt;</span>
+  <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">"MyDB"</span> <span class="na">connectionString=</span><span class="s">"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=MyDB;AttachDbFilename=|DataDirectory|\MyDB.mdf;Integrated Security=True"</span> <span class="na">providerName=</span><span class="s">"System.Data.SqlClient"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/connectionStrings&gt;</span>
+</code></pre></div></div>
+<ul>
+  <li>
+    <p>Download and install mysql-5.7.31</p>
+  </li>
+  <li>
+    <p>Use Nuget to install the following packages supporting MySQL database in the project:</p>
+
+    <p><b>MySql.Data 6.8.8<br />
+  MySql.Data.Entity 6.10.9</b></p>
+
+    <p><img src="/img/nuget2.png" alt="Fig. 2" /></p>
+  </li>
+  <li>
+    <p>Test access to MySQL database. The .NET code remains unchanged, and the establishment and operation work well. The connection string for the test is as follows:</p>
+  </li>
+</ul>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;connectionStrings&gt;</span>
+  <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">"MyDB"</span> <span class="na">connectionString=</span><span class="s">"server=localhost;port=3306;database=MyDB;user=root;password=******;"</span> <span class="na">providerName=</span><span class="s">"MySql.Data.MySqlClient"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/connectionStrings&gt;</span>
+</code></pre></div></div>
+<p>So far, accessing the local database (MS SQL, MySQL) is all right. So the project was released to the virtual host for testing, and the connection to MySQL failed. Because the virtual host does not have a MySQL server installed locally, it uses a remote MySQL server.</p>
+
+<ul>
+  <li>Change the connection string as follows:</li>
+</ul>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;connectionStrings&gt;</span>
+  <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">"MyDB"</span> <span class="na">connectionString=</span><span class="s">"server=mysql.remotehost.com;port=3306;database=MyDB;user=myid;password=mypassword;"</span> <span class="na">providerName=</span><span class="s">"MySql.Data.MySqlClient"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/connectionStrings&gt;</span>
+</code></pre></div></div>
+<p>The test results still failed. Query the remote MySQL server version as: 11.4.7-MariaDB-deb12.</p>
+
+<ul>
+  <li>Download and install MariaDB-10.1.48 locally (the local computer is WIN32, which is the highest version found under WIN32), and the local testing work is very good.</li>
+</ul>
+
+<p>The test of connecting to the remote MySQL server on the local computer still failed. According to the error prompt, it seems that there are some problems in communication compatibility between. NET code and remote MySQL server.</p>
+
+<ul>
+  <li>
+    <p>Uninstall the previously installed MySQL database package:</p>
+
+    <p><b>MySql.Data 6.8.8<br />
+  MySql.Data.Entity 6.10.9</b></p>
+  </li>
+  <li>
+    <p>Improve the .NET target framework of the project, and install the following packages in the project with Nuget:</p>
+
+    <p><b>MySql.Data.EntityFramework 9.4.0
+  </b></p>
+
+    <p>Nuget automatically installs the packages it depends on, including <b>MySql.Data 9.4.0</b>.
+   <img src="/img/nuget3.png" alt="Fig. 3" /></p>
+  </li>
+</ul>
+
+<p>Continue to test the connection to the remote MySQL server on the local computer, and the connection is successful.</p>
+
+<p>Publishing the project to the virtual host for testing also succeeded.</p>]]></content><author><name></name></author><category term="jekyll" /><category term="update" /><summary type="html"><![CDATA[I used vs2019 for the first time to develop asp.net Web program, in which I used EF6+CodeFirst to access MySQL database. I encountered some troubles during this period, so I would like to describe the steps of my work.]]></summary></entry><entry><title type="html">Vs2019 Community Edition Expiration Solution</title><link href="http://localhost:4000/jekyll/update/2025/10/07/Vs2019-Community-Edition-Expiration-Solution.html" rel="alternate" type="text/html" title="Vs2019 Community Edition Expiration Solution" /><published>2025-10-07T00:00:00+08:00</published><updated>2025-10-07T00:00:00+08:00</updated><id>http://localhost:4000/jekyll/update/2025/10/07/Vs2019-Community-Edition-Expiration-Solution</id><content type="html" xml:base="http://localhost:4000/jekyll/update/2025/10/07/Vs2019-Community-Edition-Expiration-Solution.html"><![CDATA[<p>Under Win7, vs2019 Community Edition expired, and the login always tells the network that it can’t be connected and can’t be used any more.</p>
+
+<p>I tried several methods introduced on the Internet, but they couldn’t be activated. Reinstallation was also invalid.</p>
+
+<p>Finally, upgrade IE browser to v11 version, I can log in and successfully activate vs2019.</p>
+
+<p>Guys with the same problems might as well give it a try.</p>]]></content><author><name></name></author><category term="jekyll" /><category term="update" /><summary type="html"><![CDATA[Under Win7, vs2019 Community Edition expired, and the login always tells the network that it can’t be connected and can’t be used any more.]]></summary></entry></feed>
